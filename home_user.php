@@ -1,0 +1,88 @@
+<?php
+// Iniciar la sesión si no está iniciada
+//session_start();
+
+// Verificar si el usuario está autenticado (solo para ejemplificar, ajusta según tu lógica de autenticación)
+
+include_once 'home_user_view.php';
+// Incluir archivo de conexión a la base de datos y configuraciones
+require_once 'config.php';
+
+// Consulta SQL para obtener las publicaciones del administrador
+$sql = "SELECT * FROM post ORDER BY post_id DESC"; // Suponiendo que 'Admin' es el nombre del usuario administrador
+
+// Ejecutar consulta
+$result = $mysqli->query($sql);
+
+// Verificar si hay resultados
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Mostrar cada post del administrador
+        echo "<div class='container mt-5'>";
+        echo "<div class='row justify-content-center'>";
+        echo "<div class='col-md-8'>"; // Ajustar tamaño de la columna
+        echo "<div class='card'>";
+        echo "<div class='card-body'>";
+        echo "<h5 class='card-title'>" . htmlspecialchars($row['titulo']) . "</h5>";
+        echo "<p class='card-text'>" . htmlspecialchars($row['poster']) . "</p>";
+        
+        // Mostrar imagen si está presente
+        if (!empty($row['imagen'])) {
+            $base64_image = base64_encode($row['imagen']);
+            $imageMimeType = 'image/jpeg'; // Ajusta según el tipo MIME de tu imagen
+            
+            echo "<div class='responsive-img-container'>";
+            echo "<img src='data:" . $imageMimeType . ";base64," . $base64_image . "' class='card-img-top img-fluid' alt='Imagen del post'>";
+            echo "</div>";
+        }
+        
+        // Formulario para comentarios
+        echo "<form action='guardar_comentario.php' method='post'>";
+        echo "<div class='form-group'>";
+        echo "<label for='commentText'>Tu comentario:</label>";
+        echo "<textarea class='form-control' id='commentText' name='commentText' rows='3' required></textarea>";
+        echo "</div>";
+        echo "<input type='hidden' name='postId' value='" . htmlspecialchars($row['post_id']) . "'>"; // Id del post
+        echo "<button type='submit' class='btn btn-primary'>Enviar comentario</button>";
+        echo "</form>";
+        
+        // Mostrar comentarios asociados al post
+        $postId = $row['post_id'];
+        $sql_comments = "SELECT c.texto, u.user FROM comentarios c
+                         INNER JOIN usuario u ON c.user_id = u.user_id
+                         WHERE c.post_id = ?
+                         ORDER BY c.post_id DESC, c.user_id ASC";
+        
+        if ($stmt_comments = $mysqli->prepare($sql_comments)) {
+            $stmt_comments->bind_param("i", $postId);
+            $stmt_comments->execute();
+            $stmt_comments->bind_result($commentText, $userName);
+            
+            echo "<div class='mt-3'>";
+            echo "<h6>Comentarios:</h6>";
+            
+            while ($stmt_comments->fetch()) {
+                echo "<p><strong>" . htmlspecialchars($userName) . ":</strong> " . htmlspecialchars($commentText) . "</p>";
+            }
+            
+            echo "</div>";
+            
+            $stmt_comments->close();
+        } else {
+            echo "Error al preparar la consulta de comentarios: " . $mysqli->error;
+        }
+        
+        echo "</div>"; // Cierre de card-body
+        echo "</div>"; // Cierre de card
+        echo "</div>"; // Cierre de col-md-8
+        echo "</div>"; // Cierre de row
+        echo "</div>"; // Cierre de container
+        echo "<br>";
+    }
+} else {
+    echo "No se encontraron publicaciones del administrador.";
+}
+
+// Cerrar conexión
+$mysqli->close();
+?>
