@@ -1,32 +1,32 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', function(event) {
+    var registerForms = document.getElementById('registerForm');
+    if (registerForms) {
+        registerForms.addEventListener('submit', function(event) {
             event.preventDefault();
 
-            var registerUsername = document.getElementById('registerUsername').value.trim();
-            var registerPassword = document.getElementById('registerPassword').value.trim();
+            var registerUsernamev = document.getElementById('registerUsername').value.trim();
+            var registerPasswordv = document.getElementById('registerPassword').value.trim();
 
-            if (!registerUsername || !registerPassword) {
+            if (!registerUsernamev || !registerPasswordv) {
                 showError('Por favor, complete todos los campos.');
                 return;
             }
 
-            if (registerPassword.length < 8) {
+            if (registerPasswordv.length < 8) {
                 showError('La contraseña debe tener al menos 8 caracteres.');
                 return;
             }
 
-            registerUser(registerUsername, registerPassword);
+            registerUser(registerUsernamev, registerPasswordv);
         });
     }
 
-    function registerUser(registerUsername, registerPassword) {
+    function registerUser(registerUsernamev, registerPasswordv) {
         var formData = new FormData();
-        formData.append('registerUsername', registerUsername);
-        formData.append('registerPassword', registerPassword);
+        formData.append('registerUsername', registerUsernamev);
+        formData.append('registerPassword', registerPasswordv);
 
-        fetch('register_process.php', {
+        fetch('register_process.php', { 
             method: 'POST',
             body: formData
         })

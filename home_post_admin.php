@@ -1,7 +1,7 @@
 <?php
 
 //session_start();
-include_once 'home_post_view.php';
+include_once 'home_post_view.php'; 
 require_once 'config.php';
 $visible = false;
 $sql_user = "SELECT * FROM usuario ";

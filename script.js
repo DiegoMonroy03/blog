@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             authenticateUser(username, password);
-        });
+        }); 
     }
 
     function authenticateUser(username, password) {

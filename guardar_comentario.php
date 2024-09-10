@@ -3,7 +3,7 @@
 session_start();
 //include_once 'home_user.php';
 
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['username'])) { 
     header("location: index.html"); // Redirigir si no hay sesión activa
     exit;
 }

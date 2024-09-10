@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); 
 
 // Verificar si el usuario tiene sesión y es administrador
 // if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'Admin') {

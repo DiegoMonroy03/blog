@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (postImage.size > 5 * 1024 * 1024) { // 5 MB
                 alert('El tamaño de la imagen no debe exceder los 5 MB.');
                 return;
-            }
+            } 
         }
 
         // Preparar datos del formulario para enviar
